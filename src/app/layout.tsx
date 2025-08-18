@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
-
+import ROOT_HOOKS from "@/hooks/hooks_component/ROOT_HOOKS";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,11 +12,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
-      <body >
-        {children}
-      </body>
+      <ROOT_HOOKS>
+        <body >
+          {children}
+        </body>
+      </ROOT_HOOKS>
     </html>
   );
 }

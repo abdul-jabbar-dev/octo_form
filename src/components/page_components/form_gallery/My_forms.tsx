@@ -1,10 +1,27 @@
-
+'use client'
 import { Button } from '@/components/ui/button'
+import { useAppDispatch } from '@/hooks/redux_rtk'
+import { SaveDraft } from '@/lib/redux/features/forms/formSlice'
+import { GenerateFormId } from '@/utils/form/id_generate/form_id_generate'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { IconEdit, IconTrash, IconEyeCheck, IconDotsVertical, IconPlus } from '@tabler/icons-react'
-import React from 'react'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { MainFormCreate } from '@/types/forms/createForms';
+
 
 export default function My_forms() {
+    const dispatch = useAppDispatch()
+    const [newFormLink, setNewFormLink] = useState<string | null>(null);
+
+    const formIdRef = React.useRef<string>(GenerateFormId("user"));
+
+    useEffect(() => {
+        if (!formIdRef.current) {
+            formIdRef.current = GenerateFormId("user");
+        }
+        setNewFormLink(`/canvas/${formIdRef.current}/edit`);
+    }, []);
 
 
     const formsSet = [
@@ -38,20 +55,34 @@ export default function My_forms() {
 
         },
     ]
-
+    const initialForm: MainFormCreate = {
+        authorId: "user",
+        formId: formIdRef.current,
+        blocks: [],
+        title: "New Form",
+        status: "DRAFT",
+    }
 
     return (
 
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-4 py-12">
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div style={{ height: 'calc(var(--spacing) * 98)' }} className="   shadow cursor-pointer hover:bg-gray-100 active:bg-gray-50 w-full bg-gray-50 rounded-lg sahdow-lg overflow-hidden flex flex-col justify-center items-center">
 
-                    <IconPlus className='w-16 h-16 text-gray-600' />
-                    <span className='text-gray-600 text-lg font-semibold mt-2'>
-                        Create New Form
-                    </span>
-                </div>
+                {newFormLink && (
+                    <Link
+                        style={{ height: "calc(var(--spacing) * 98)" }}
+                        className="shadow cursor-pointer hover:bg-gray-100 active:bg-gray-50 w-full bg-gray-50 rounded-lg overflow-hidden flex flex-col justify-center items-center"
+                        href={newFormLink!}
+                        onClick={() => dispatch(SaveDraft(initialForm))}
+                    >
+                        <IconPlus className="w-16 h-16 text-gray-600" />
+                        <span className="text-gray-600 text-lg font-semibold mt-2">
+                            Create New Form
+                        </span>
+                    </Link>
+                )}
+
                 {
                     formsSet.map((form, index) => <div key={index} className=" shadow w-full bg-white rounded-lg sahdow-lg overflow-hidden flex flex-col justify-center items-center">
                         <div>
