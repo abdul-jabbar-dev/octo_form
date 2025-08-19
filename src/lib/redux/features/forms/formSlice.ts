@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { FormStore, MainForm, MainFormCreate } from "@/types/forms/createForms";
 
 const initialState: FormStore = {
+  sessionDraft: null,
   draft: [],
   published: [],
 };
@@ -11,10 +12,27 @@ export const FormSlice = createSlice({
   name: "FORMS",
   initialState,
   reducers: {
-    SaveDraft: (state, action: PayloadAction<MainFormCreate>) => {
-      state.draft.push(action.payload);
+    // This reducer is used to set the session draft form
+    SetSessionDraft: (state, action: PayloadAction<MainFormCreate>) => {
+      state.sessionDraft = action.payload;
     },
-    updateDraft: (state, action: PayloadAction<MainForm>) => {
+    CleanSessionDraft: (state) => {
+      state.sessionDraft = null;
+    },
+
+    // Save a new draft form
+    SaveDraft: (
+      state,
+      action: PayloadAction<MainFormCreate | MainForm | null>
+    ) => {
+      if (!action.payload) {
+        state.draft.unshift(state.sessionDraft!);
+        state.sessionDraft = null;
+      } else {
+        state.draft.push(action.payload);
+      }
+    },
+    UpdateDraft: (state, action: PayloadAction<MainForm>) => {
       const index = state.draft.findIndex(
         (f) => f.formId === action.payload.formId
       );
@@ -29,6 +47,12 @@ export const FormSlice = createSlice({
   },
 });
 
-export const { SaveDraft, updateDraft, PublishForm } = FormSlice.actions;
+export const {
+  SaveDraft,
+  UpdateDraft,
+  PublishForm,
+  CleanSessionDraft,
+  SetSessionDraft,
+} = FormSlice.actions;
 
 export default FormSlice.reducer;

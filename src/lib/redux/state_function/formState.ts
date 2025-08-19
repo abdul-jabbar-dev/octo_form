@@ -4,6 +4,9 @@ import { RootState } from "../store";
 export const getDraftForms = (state: RootState): MainFormCreate[] => {
   return state.forms.draft;
 };
+export const getSessiontForm = (state: RootState): MainFormCreate | null => {
+  return state.forms.sessionDraft;
+};
 export const getDraftById = (state: RootState, formId: string) =>
   state.forms.draft.find((form) => form.formId === formId) || null;
 

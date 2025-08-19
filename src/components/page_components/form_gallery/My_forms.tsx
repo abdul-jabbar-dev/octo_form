@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { useAppDispatch } from '@/hooks/redux_rtk'
-import { SaveDraft } from '@/lib/redux/features/forms/formSlice'
+import { SetSessionDraft } from '@/lib/redux/features/forms/formSlice'
 import { GenerateFormId } from '@/utils/form/id_generate/form_id_generate'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { IconEdit, IconTrash, IconEyeCheck, IconDotsVertical, IconPlus } from '@tabler/icons-react'
@@ -20,7 +20,7 @@ export default function My_forms() {
         if (!formIdRef.current) {
             formIdRef.current = GenerateFormId("user");
         }
-        setNewFormLink(`/canvas/${formIdRef.current}/edit`);
+        setNewFormLink(`/canvas/${formIdRef.current}/edit?create=true`);
     }, []);
 
 
@@ -74,7 +74,7 @@ export default function My_forms() {
                         style={{ height: "calc(var(--spacing) * 98)" }}
                         className="shadow cursor-pointer hover:bg-gray-100 active:bg-gray-50 w-full bg-gray-50 rounded-lg overflow-hidden flex flex-col justify-center items-center"
                         href={newFormLink!}
-                        onClick={() => dispatch(SaveDraft(initialForm))}
+                        onClick={() => dispatch(SetSessionDraft(initialForm))}
                     >
                         <IconPlus className="w-16 h-16 text-gray-600" />
                         <span className="text-gray-600 text-lg font-semibold mt-2">

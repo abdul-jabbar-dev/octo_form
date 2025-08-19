@@ -1,6 +1,7 @@
+import { MainFormCreate } from '@/types/forms/createForms'
 import React from 'react'
 
-export default function Canvas() {
+export default function Canvas({ data }: { data: MainFormCreate }) {
     return (
         < >  <div className="container mx-auto px-6">
             {/* <!-- Remove class [ h-64 ] when adding a card block --> */}

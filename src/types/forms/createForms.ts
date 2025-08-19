@@ -1,6 +1,7 @@
 export interface FormStore {
   draft: MainFormCreate[];
   published: MainForm[];
+  sessionDraft: MainFormCreate | null;
 }
 
 // Block types
@@ -42,8 +43,8 @@ type QuestionBlock = {
   id: string;
   type: "question";
   questionType: "text" | "textarea" | "radio" | "checkbox" | "dropdown";
-  label: TextBlock;       // styled question text
-  options?: TextBlock[];  // each option can also have style
+  label: TextBlock; // styled question text
+  options?: TextBlock[]; // each option can also have style
   required?: boolean;
 };
 
