@@ -1,56 +1,63 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { FormStore, MainForm, MainFormCreate } from "@/types/forms/createForms";
+import { InitaialForm, MainForm } from "@/types/forms/createForms";
 
-const initialState: FormStore = {
-  sessionDraft: null,
-  draft: [],
-  published: [],
+const initialState: InitaialForm = {
+  session: null,
+  list: [],
 };
-
 export const FormSlice = createSlice({
   name: "FORMS",
   initialState,
   reducers: {
     // This reducer is used to set the session draft form
-    SetSessionDraft: (state, action: PayloadAction<MainFormCreate>) => {
-      state.sessionDraft = action.payload;
-    },
-    CleanSessionDraft: (state) => {
-      state.sessionDraft = null;
+    SetSessionDraft: (state, action: PayloadAction<MainForm>) => {
+      
+      state.session = {
+        ...action.payload,
+        version: 0,
+        status: "SESSION_DRAFT",
+      };
     },
 
-    // Save a new draft form
-    SaveDraft: (
-      state,
-      action: PayloadAction<MainFormCreate | MainForm | null>
-    ) => {
+    CleanSessionDraft: (state) => {
+      state.session = null;
+    },
+
+    SaveDraft: (state, action: PayloadAction<MainForm | null>) => {
+      state.list.unshift({
+        ...(action.payload || state.session!),
+        status: "DRAFT",
+        createdAt: new Date().toISOString(),
+      });
       if (!action.payload) {
-        state.draft.unshift(state.sessionDraft!);
-        state.sessionDraft = null;
-      } else {
-        state.draft.push(action.payload);
+        state.session = null;
       }
     },
     UpdateDraft: (state, action: PayloadAction<MainForm>) => {
-      const index = state.draft.findIndex(
+      const index = state.list.findIndex(
         (f) => f.formId === action.payload.formId
       );
-      if (index >= 0) state.draft[index] = action.payload;
+      if (index >= 0)
+        state.list[index] = {
+          ...action.payload,
+          status: "DRAFT",
+          updatedAt: new Date().toISOString(),
+        };
     },
     // getDraft reducer removed; use a selector instead
 
-    PublishForm: (state, action: PayloadAction<MainForm>) => {
-      state.published.push(action.payload);
-      state.draft = state.draft.filter((form) => form !== action.payload);
-    },
+    // PublishForm: (state, action: PayloadAction<MainForm>) => {
+    //   state.published.push(action.payload);
+    //   state.draft = state.draft.filter((form) => form !== action.payload);
+    // },
   },
 });
 
 export const {
   SaveDraft,
   UpdateDraft,
-  PublishForm,
+  // PublishForm,
   CleanSessionDraft,
   SetSessionDraft,
 } = FormSlice.actions;

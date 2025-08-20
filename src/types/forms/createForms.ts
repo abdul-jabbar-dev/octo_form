@@ -1,8 +1,7 @@
-export interface FormStore {
-  draft: MainFormCreate[];
-  published: MainForm[];
-  sessionDraft: MainFormCreate | null;
-}
+export type InitaialForm = {
+  session: MainForm | null;
+  list: MainForm[];
+};
 
 // Block types
 type TextBlock = {
@@ -53,21 +52,14 @@ type Block = TextBlock | ImageBlock | VideoBlock | DividerBlock | QuestionBlock;
 
 // Main form type
 export type MainForm = {
+ img: string | null; // optional image for the form
   formId: string;
-  id: string;
+  id?: string;
   title: string;
   authorId: string;
   version: number;
   blocks: Block[]; // blocks array for notion-style flexible layout
-  createdAt: string;
-  updatedAt: string;
-  status: "DRAFT" | "PUBLISHED";
-};
-export type MainFormCreate = {
-  formId: string;
-  title: string;
-  authorId: string;
-  version?: number;
-  blocks: Block[];
-  status: "DRAFT" | "PUBLISHED";
+  createdAt?: string;
+  updatedAt?: string;
+  status: "DRAFT" | "PUBLISHED" | "SESSION_DRAFT";
 };
